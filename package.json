@@ -1,0 +1,14 @@
+{
+	"name": "plugin",
+	"version": "1.0.0",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"magento:start": "docker-compose up -d",
+		"docker:update": "docker cp ../plugin/ <container_name>:/var/www/html/app/code/Vendor/ModuleName",
+		"open-container-cli": "docker exec -it magento_app bash"
+	},
+	"author": "",
+	"license": "ISC",
+	"description": ""
+}

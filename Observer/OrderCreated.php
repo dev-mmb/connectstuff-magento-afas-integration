@@ -1,6 +1,6 @@
 <?php
 
-namespace Vendor\OrderNotifier\Observer;
+namespace Connectstuff\OrderNotifier\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Event\Observer;
@@ -24,9 +24,12 @@ class OrderCreated implements ObserverInterface
             // Get the order object
             $order = $observer->getEvent()->getOrder();
 
+            $key = 'ZKzU^_AP2n51?a)qFQ*-8h{debk]?}@Ou_U%<//ScuZBpjO0<BYI4M.&fT3)k'; // 
+            $url = 'https://magento-integ-7.hoststuff.nl/api/order'; // 
+
             // Prepare data for HTTP request
             $data = [
-                'key' => 'ZKzU^_AP2n51?a)qFQ*-8h{debk]?}@Ou_U%<//ScuZBpjO0<BYI4M.&fT3)k',
+                'key' => $key,
                 'order_id' => $order->getIncrementId(),
                 'status' => $order->getStatus(),
                 'status_label' => $order->getStatusLabel(),
@@ -42,7 +45,6 @@ class OrderCreated implements ObserverInterface
             ];
 
             // Make HTTP POST request
-            $url = 'https://magento-integ-7.hoststuff.nl/api/order'; 
             $this->curl->post($url, json_encode($data));
 
             // Log the response

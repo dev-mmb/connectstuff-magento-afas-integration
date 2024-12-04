@@ -1,0 +1,25 @@
+{
+	"name": "connectstuff/order-notifier",
+	"description": "A Magento 2 module to notify the connectstuff service after an order is created.",
+	"require": {
+		"php": "^7.3 || ^8.1",
+		"magento/framework": "*"
+	},
+	"type": "magento2-module",
+	"version": "1.0.0",
+	"autoload": {
+		"files": [
+			"registration.php"
+		],
+		"psr-4": {
+			"Connectstuff\\OrderNotifier\\": ""
+		}
+	},
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://gitlab.com/connectstuff/rrcommerce-magento-plugin#"
+		}
+	],
+	"license": "proprietary"
+}
