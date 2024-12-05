@@ -27,8 +27,6 @@ class OrderCreated implements ObserverInterface
             // Get the order object
             $order = $observer->getEvent()->getOrder();
 
-            // $key = 'ZKzU^_AP2n51?a)qFQ*-8h{debk]?}@Ou_U%<//ScuZBpjO0<BYI4M.&fT3)k'; 
-            // $url = 'https://magento-integ-7.hoststuff.nl/api/order';
             $key = $this->deploymentConfig->get('CONNECTSTUFF_KEY') ?? '';
             $url = $this->deploymentConfig->get('CONNECTSTUFF_URL') ?? '';
 
