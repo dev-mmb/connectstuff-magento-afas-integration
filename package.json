@@ -1,14 +1,19 @@
 {
-	"name": "plugin",
+	"name": "magento-afas-integration",
 	"version": "1.0.0",
-	"main": "index.js",
+	"main": "gen-zip.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"magento:start": "docker-compose up -d",
-		"docker:update": "docker cp ../plugin/ <container_name>:/var/www/html/app/code/Vendor/ModuleName",
-		"open-container-cli": "docker exec -it magento_app bash"
+		"update": "mkdir -p ./../m2/src/app/code/Connectstuff/MagentoAfasIntegration; cp -r ./* ./../m2/src/app/code/Connectstuff/MagentoAfasIntegration",
+		"plugin:install": "npm run update; cd ../m2; bin/magento module:enable Connectstuff_MagentoAfasIntegration; bin/magento setup:upgrade; bin/magento setup:di:compile; bin/magento cache:flush; cd ../rrcommerce-magento-plugin",
+		"gen:zip": "ts-node --project tsconfig.json ./generate-zip.ts"
 	},
 	"author": "",
 	"license": "ISC",
-	"description": ""
+	"description": "",
+	"dependencies": {
+		"@types/node": "^22.10.1",
+		"node": "^22.12.0",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.7.2"
+	}
 }

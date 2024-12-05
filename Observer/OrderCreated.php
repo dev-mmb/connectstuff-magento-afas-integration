@@ -1,21 +1,24 @@
 <?php
 
-namespace Connectstuff\OrderNotifier\Observer;
+namespace Connectstuff\MagentoAfasIntegration\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\HTTP\Client\Curl;
 use Psr\Log\LoggerInterface;
+use Magento\Framework\App\DeploymentConfig;
 
 class OrderCreated implements ObserverInterface
 {
     protected $curl;
     protected $logger;
-
-    public function __construct(Curl $curl, LoggerInterface $logger)
+    private $deploymentConfig;
+    
+    public function __construct(Curl $curl, LoggerInterface $logger, DeploymentConfig $deploymentConfig)
     {
         $this->curl = $curl;
         $this->logger = $logger;
+        $this->deploymentConfig = $deploymentConfig;
     }
 
     public function execute(Observer $observer)
@@ -24,26 +27,21 @@ class OrderCreated implements ObserverInterface
             // Get the order object
             $order = $observer->getEvent()->getOrder();
 
-            $key = 'ZKzU^_AP2n51?a)qFQ*-8h{debk]?}@Ou_U%<//ScuZBpjO0<BYI4M.&fT3)k'; // 
-            $url = 'https://magento-integ-7.hoststuff.nl/api/order'; // 
+            // $key = 'ZKzU^_AP2n51?a)qFQ*-8h{debk]?}@Ou_U%<//ScuZBpjO0<BYI4M.&fT3)k'; 
+            // $url = 'https://magento-integ-7.hoststuff.nl/api/order';
+            $key = $this->deploymentConfig->get('CONNECTSTUFF_KEY') ?? '';
+            $url = $this->deploymentConfig->get('CONNECTSTUFF_URL') ?? '';
 
+            $payment = $order->getPayment();
             // Prepare data for HTTP request
             $data = [
                 'key' => $key,
-                'order_id' => $order->getIncrementId(),
-                'status' => $order->getStatus(),
-                'status_label' => $order->getStatusLabel(),
-                'created_at' => $order->getCreatedAt(),
-                'subtotal' => $order->getSubtotal(),
-                'base_grand_total' => $order->getBaseGrandTotal(),
-                'grand_total' => $order->getGrandTotal(),
-                'customer_id' => $order->getCustomerId(),
-                'base_currency_code' => $order->getBaseCurrencyCode(),
-                'global_currency_code' => $order->getGlobalCurrencyCode(),
-                'order_currency_code' => $order->getOrderCurrencyCode(),
-                'payment_method' => $result->getPayment()->getMethod(),
+                'data' => get_mangled_object_vars($order),
+                'payment' => get_mangled_object_vars($order->getPayment())
             ];
-
+            $this->curl->setHeaders([
+                'Content-Type' => 'application/json'
+            ]);
             // Make HTTP POST request
             $this->curl->post($url, json_encode($data));
 
